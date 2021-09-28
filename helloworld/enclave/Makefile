@@ -16,7 +16,10 @@
 # under the License.
 Rust_Enclave_Name := libenclave.a
 Rust_Enclave_Files := $(wildcard src/*.rs)
-Rust_Target_Path := $(CURDIR)/../../../xargo
+
+RUST_SGX_SDK ?= $(CURDIR)/../../..
+
+Rust_Target_Path := $(RUST_SGX_SDK)/xargo
 
 ifeq ($(MITIGATION-CVE-2020-0551), LOAD)
 export MITIGATION_CVE_2020_0551=LOAD

@@ -21,7 +21,9 @@ SGX_SDK ?= /opt/sgxsdk
 SGX_MODE ?= HW
 SGX_ARCH ?= x64
 
-TOP_DIR := ../..
+RUST_SGX_SDK ?= ../..
+
+TOP_DIR := $(RUST_SGX_SDK)
 include $(TOP_DIR)/buildenv.mk
 
 ifeq ($(shell getconf LONG_BIT), 32)
@@ -60,8 +62,8 @@ SGX_COMMON_CFLAGS += -fstack-protector
 
 CUSTOM_LIBRARY_PATH := ./lib
 CUSTOM_BIN_PATH := ./bin
-CUSTOM_EDL_PATH := ../../edl
-CUSTOM_COMMON_PATH := ../../common
+CUSTOM_EDL_PATH := $(TOP_DIR)/edl
+CUSTOM_COMMON_PATH := $(TOP_DIR)/common
 
 ######## EDL Settings ########
 
@@ -140,7 +142,7 @@ app/%.o: app/%.c
 	@echo "CXX  <=  $<"
 
 $(App_Name): app/Enclave_u.o $(App_C_Objects) sgx_ustdc
-	cp ../../sgx_ustdc/libsgx_ustdc.a ./lib
+	cp $(TOP_DIR)/sgx_ustdc/libsgx_ustdc.a ./lib
 	mkdir -p bin
 	@$(CXX) app/Enclave_u.o $(App_C_Objects) -o $@ $(App_Link_Flags)
 	@echo "LINK =>  $@"
@@ -167,7 +169,7 @@ enclave:
 
 .PHONY: sgx_ustdc
 sgx_ustdc:
-	$(MAKE) -C ../../sgx_ustdc/ 2> /dev/null
+	$(MAKE) -C $(TOP_DIR)/sgx_ustdc/ 2> /dev/null
 
 .PHONY: clean
 clean:
